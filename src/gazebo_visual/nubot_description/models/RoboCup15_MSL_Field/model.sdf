@@ -1,0 +1,198 @@
+<?xml version="1.0"?>
+<!-- XML 声明：文件编码与基础格式，SDF 文件标准开头 -->
+<!-- SDF 根标签，version 指定SDF协议版本，当前使用 1.10 适配 Gazebo Harmonic -->
+<sdf version="1.11">
+
+  <!-- 定义一个独立模型，模型名称：RoboCup15_MSL_Field（RoboCup MSL 比赛场地） -->
+  <model name="RoboCup15_MSL_Field">
+
+    <!-- static：静态模型开关 true=静态物体，物理引擎不会计算位移/受力，不会被碰撞推动，场地固定不动 -->
+    <static>true</static>
+    
+    
+    <!-- link：连杆，SDF 中物理实体的基本单元
+         整个场地合并为单个连杆，name 为连杆标识 -->
+    <link name="chassis">
+
+      <!-- pose：连杆位姿，格式：X Y Z Roll Pitch Yaw
+           单位：米(m)、弧度(rad) Z=0.01：将场地整体抬高0.01m，避免与默认地面重叠产生渲染/物理异常 -->
+      <pose> 0 0 0.01 0 0 0 </pose>
+
+      <!-- ============================================== -->
+      <!-- collision：碰撞体，仅负责物理碰撞、摩擦、接触检测，无视觉效果 -->
+      <collision name="collision">
+        <!-- geometry：几何形状容器，定义碰撞体外形 -->
+        <geometry>
+          <!-- plane：无限平面几何体，常用于地面、平台
+               物理特性：逻辑上无限大，size 仅辅助参考 -->
+          <plane>
+            <!-- normal：平面法向量，决定平面朝向  X Y Z
+                 0 0 1 → 法向量沿Z轴向上，代表水平地面 -->
+            <normal>0 0 1</normal>
+            <!-- size：平面视觉尺寸  宽度 长度，单位m
+                 此处定义主场地可视范围 22m × 14m -->
+            <size>22 14</size>
+          </plane>
+        </geometry>
+
+        <!-- surface：物体表面物理属性容器，配置摩擦、弹力等接触特性 -->
+        <surface>
+          <!-- friction：摩擦力配置节点 -->
+          <friction>
+            <!-- ode：指定使用 ODE 物理引擎（Gazebo 默认物理引擎）的摩擦参数 -->
+            <ode>
+              <!-- mu：主方向摩擦系数，数值越大摩擦力越强，越不容易打滑 -->
+              <mu>100</mu>
+              <!-- mu2：次方向摩擦系数，垂直于主摩擦方向，一般取值为 mu 的 1/2 -->
+              <mu2>50</mu2>
+            </ode>
+          </friction>
+        </surface>
+      </collision>
+
+      <!-- ============================================== -->
+      <!-- visual：视觉模型，仅负责画面渲染，不参与物理碰撞计算 -->
+      <visual name="carpet">        <!-- 主场地地毯视觉层，name为视觉体标识 -->
+        <!-- cast_shadows：是否投射阴影 false=关闭阴影，地面/场地通常关闭，提升渲染效率、画面整洁 -->
+        <cast_shadows>false</cast_shadows>
+
+        <!-- geometry：视觉几何体，外形和下方碰撞体保持一致 -->
+        <geometry>
+          <plane>
+            <normal>0 0 1</normal>            <!-- 平面朝上，水平放置 -->
+            <size>22 14</size>            <!-- 可视尺寸与碰撞体匹配：22m × 14m -->
+          </plane>
+        </geometry>
+
+        <!-- material：材质配置，控制颜色、光照、贴图、反光等视觉效果 -->
+        <material>
+          <!-- ambient：环境光颜色，格式 R G B A (红 绿 蓝 透明度)，取值 0~1
+               物体在阴影区域呈现的颜色 -->
+          <ambient>1.0 1.0 1.0 1.0</ambient>
+          <!-- diffuse：漫反射颜色，正常光照下物体主体颜色 -->
+          <diffuse>1.0 1.0 1.0 1.0</diffuse>
+          <!-- specular：高光反射，格式 R G B A 高光强度系数
+               最后一个数值为高光范围，数值越小光斑越集中 -->
+          <specular>0.2 0.2 0.2 1.0</specular>
+
+          <!-- pbr：基于物理的渲染（PBR），现代真实质感渲染方案 -->
+          <pbr>
+            <!-- metal：金属/非金属材质分支，用于区分材质类型 -->
+            <metal>
+              <!-- albedo_map：基础颜色贴图路径，加载外部图片作为表面纹理 -->
+              <albedo_map>./materials/textures/RoboCup15_MSL_Field_Map.jpg</albedo_map>
+              <!-- roughness：粗糙度，取值 0~1 1=完全粗糙不反光，0=镜面光滑；地毯设为0.9符合真实质感 -->
+              <roughness>0.9</roughness>
+              <!-- metalness：金属度，取值 0~1 0=非金属（地毯/布料/地面），1=纯金属 -->
+              <metalness>0.0</metalness>
+            </metal>
+          </pbr>
+        </material>
+      </visual>
+
+      <!-- ============================================== -->
+      <!-- 上方边界视觉层：base1，场地顶部绿色边框 -->
+      <visual name="base1">
+        <!-- pose：边界条位置，Y=7.75 放置在主场地最上方，高度与主场地一致 -->
+        <pose>0 7.75 0.01 0 0 0</pose>
+        <cast_shadows>false</cast_shadows>        <!-- 关闭阴影 -->
+        <geometry>
+          <plane>
+            <normal>0 0 1</normal>
+            <size>25.0 1.5</size>            <!-- 尺寸：长25m、宽1.5m 的长条边界 -->
+          </plane>
+        </geometry>
+        <material>
+          <ambient>0.2578 0.4023 0.1836 1</ambient>          <!-- 暗绿色环境色 -->
+          <diffuse>0.2578 0.4023 0.1836 1</diffuse>          <!-- 暗绿色主体色 -->
+          <specular>0.1 0.1 0.1 1</specular>          <!-- 低高光，几乎不反光 -->
+          <pbr>
+            <metal>
+              <roughness>0.9</roughness>              <!-- 高粗糙度，哑光效果 -->
+              <metalness>0.0</metalness>              <!-- 非金属材质 -->
+            </metal>
+          </pbr>
+        </material>
+      </visual>
+
+      <!-- ============================================== -->
+      <!-- 下方边界视觉层：base2，场地底部绿色边框 -->
+      <visual name="base2">
+        <!-- pose：Y=-7.75 放置在主场地最下方 -->
+        <pose>0 -7.75 0.01 0 0 0</pose>
+        <cast_shadows>false</cast_shadows>
+        <geometry>
+          <plane>
+            <normal>0 0 1</normal>
+            <size>25.0 1.5</size>
+          </plane>
+        </geometry>
+        <material>
+          <ambient>0.2578 0.4023 0.1836 1</ambient>
+          <diffuse>0.2578 0.4023 0.1836 1</diffuse>
+          <specular>0.1 0.1 0.1 1</specular>
+          <pbr>
+            <metal>
+              <roughness>0.9</roughness>
+              <metalness>0.0</metalness>
+            </metal>
+          </pbr>
+        </material>
+      </visual>
+
+      <!-- ============================================== -->
+      <!-- 右侧边界视觉层：base3，场地右侧绿色边框 -->
+      <visual name="base3">
+        <!-- pose：X=11.75 放置在主场地最右侧 -->
+        <pose>11.75 0 0.01 0 0 0</pose>
+        <cast_shadows>false</cast_shadows>
+        <geometry>
+          <plane>
+            <normal>0 0 1</normal>
+            <size>1.5 14.0</size>            <!-- 竖条边界：宽1.5m、高14m -->
+          </plane>
+        </geometry>
+        <material>
+          <ambient>0.2578 0.4023 0.1836 1</ambient>
+          <diffuse>0.2578 0.4023 0.1836 1</diffuse>
+          <specular>0.1 0.1 0.1 1</specular>
+          <pbr>
+            <metal>
+              <roughness>0.9</roughness>
+              <metalness>0.0</metalness>
+            </metal>
+          </pbr>
+        </material>
+      </visual>
+
+      <!-- ============================================== -->
+      <!-- 左侧边界视觉层：base4，场地左侧绿色边框 -->
+      <visual name="base4">
+        <!-- pose：X=-11.75 放置在主场地最左侧 -->
+        <pose>-11.75 0 0.01 0 0 0</pose>
+        <cast_shadows>false</cast_shadows>
+        <geometry>
+          <plane>
+            <normal>0 0 1</normal>
+            <size>1.5 14.0</size>
+          </plane>
+        </geometry>
+        <material>
+          <ambient>0.2578 0.4023 0.1836 1</ambient>
+          <diffuse>0.2578 0.4023 0.1836 1</diffuse>
+          <specular>0.1 0.1 0.1 1</specular>
+          <pbr>
+            <metal>
+              <roughness>0.9</roughness>
+              <metalness>0.0</metalness>
+            </metal>
+          </pbr>
+        </material>
+      </visual>
+
+    </link>    <!--
+    结束场地连杆 -->
+  </model>  <!--
+  结束场地模型 -->
+</sdf><!--
+结束SDF根节点 -->
