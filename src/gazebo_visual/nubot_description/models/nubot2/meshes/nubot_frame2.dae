@@ -8030,7 +8030,7 @@
             <profile_COMMON>
                 <newparam sid="ID176">
                     <surface type="2D">
-                        <init_from>ID175</init_from>
+                        <init_from>nubot2_ID175</init_from>
                     </surface>
                 </newparam>
                 <newparam sid="ID177">
@@ -8062,7 +8062,7 @@
             <profile_COMMON>
                 <newparam sid="ID359">
                     <surface type="2D">
-                        <init_from>ID358</init_from>
+                        <init_from>nubot2_ID358</init_from>
                     </surface>
                 </newparam>
                 <newparam sid="ID360">
@@ -8086,7 +8086,7 @@
             <profile_COMMON>
                 <newparam sid="ID372">
                     <surface type="2D">
-                        <init_from>ID371</init_from>
+                        <init_from>nubot2_ID371</init_from>
                     </surface>
                 </newparam>
                 <newparam sid="ID373">
@@ -8110,7 +8110,7 @@
             <profile_COMMON>
                 <newparam sid="ID385">
                     <surface type="2D">
-                        <init_from>ID384</init_from>
+                        <init_from>nubot2_ID384</init_from>
                     </surface>
                 </newparam>
                 <newparam sid="ID386">
@@ -8160,17 +8160,17 @@
         </effect>
     </library_effects>
     <library_images>
-        <image id="ID175">
-            <init_from>nubot_frame2/texture0.png</init_from>
+        <image id="nubot2_ID175">
+            <init_from>nubot2_texture0.png</init_from>
         </image>
-        <image id="ID358">
-            <init_from>nubot_frame2/texture1.png</init_from>
+        <image id="nubot2_ID358">
+            <init_from>nubot2_texture1.png</init_from>
         </image>
-        <image id="ID371">
-            <init_from>nubot_frame2/texture2.png</init_from>
+        <image id="nubot2_ID371">
+            <init_from>nubot2_texture2.png</init_from>
         </image>
-        <image id="ID384">
-            <init_from>nubot_frame2/texture3.png</init_from>
+        <image id="nubot2_ID384">
+            <init_from>nubot2_texture3.png</init_from>
         </image>
     </library_images>
     <scene>

@@ -2973,7 +2973,7 @@
             <profile_COMMON>
                 <newparam sid="ID178">
                     <surface type="2D">
-                        <init_from>ID177</init_from>
+                        <init_from>rival3_ID177</init_from>
                     </surface>
                 </newparam>
                 <newparam sid="ID179">
@@ -2994,7 +2994,7 @@
             <profile_COMMON>
                 <newparam sid="ID349">
                     <surface type="2D">
-                        <init_from>ID348</init_from>
+                        <init_from>rival3_ID348</init_from>
                     </surface>
                 </newparam>
                 <newparam sid="ID350">
@@ -3026,7 +3026,7 @@
             <profile_COMMON>
                 <newparam sid="ID382">
                     <surface type="2D">
-                        <init_from>ID381</init_from>
+                        <init_from>rival3_ID381</init_from>
                     </surface>
                 </newparam>
                 <newparam sid="ID383">
@@ -3050,7 +3050,7 @@
             <profile_COMMON>
                 <newparam sid="ID401">
                     <surface type="2D">
-                        <init_from>ID400</init_from>
+                        <init_from>rival3_ID400</init_from>
                     </surface>
                 </newparam>
                 <newparam sid="ID402">
@@ -3074,7 +3074,7 @@
             <profile_COMMON>
                 <newparam sid="ID414">
                     <surface type="2D">
-                        <init_from>ID413</init_from>
+                        <init_from>rival3_ID413</init_from>
                     </surface>
                 </newparam>
                 <newparam sid="ID415">
@@ -3124,20 +3124,20 @@
         </effect>
     </library_effects>
     <library_images>
-        <image id="ID177">
-            <init_from>rival_frame3/texture0.png</init_from>
+        <image id="rival3_ID177">
+            <init_from>rival3_texture0.png</init_from>
         </image>
-        <image id="ID348">
-            <init_from>rival_frame3/texture1.png</init_from>
+        <image id="rival3_ID348">
+            <init_from>rival3_texture1.png</init_from>
         </image>
-        <image id="ID381">
-            <init_from>rival_frame3/texture2.png</init_from>
+        <image id="rival3_ID381">
+            <init_from>rival3_texture2.png</init_from>
         </image>
-        <image id="ID400">
-            <init_from>rival_frame3/texture3.png</init_from>
+        <image id="rival3_ID400">
+            <init_from>rival3_texture3.png</init_from>
         </image>
-        <image id="ID413">
-            <init_from>rival_frame3/texture4.png</init_from>
+        <image id="rival3_ID413">
+            <init_from>rival3_texture4.png</init_from>
         </image>
     </library_images>
     <scene>

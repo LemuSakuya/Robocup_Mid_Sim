@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sdf version="1.11">
-    <model name="nubot1">
+    <model name="rival4">
         <static>false</static>
         <link name="chassis">
             <pose>0 0 0.01 0 0 0</pose>
@@ -50,7 +50,7 @@
                 <geometry>
                     <mesh>
                         <scale>1.1 1.1 1.4</scale>
-                        <uri>fmodel://rival4/meshes/rival_frame4.dae</uri>
+                        <uri>model://rival4/meshes/rival_frame4.dae</uri>
                     </mesh>
                 </geometry>
             </visual>

@@ -60,25 +60,7 @@
                         </technique_common>
                     </bind_material>
                 </instance_geometry>
-                <instance_geometry url="#ID45">
-                    <bind_material>
-                        <technique_common>
-                            <instance_material symbol="Material2" target="#ID46">
-                                <bind_vertex_input semantic="UVSET0" input_semantic="TEXCOORD" input_set="0" />
-                            </instance_material>
-                        </technique_common>
-                    </bind_material>
-                </instance_geometry>
-                <instance_geometry url="#ID51">
-                    <bind_material>
-                        <technique_common>
-                            <instance_material symbol="Material2" target="#ID52">
-                                <bind_vertex_input semantic="UVSET0" input_semantic="TEXCOORD" input_set="0" />
-                            </instance_material>
-                        </technique_common>
-                    </bind_material>
-                </instance_geometry>
-            </node>
+                </node>
         </visual_scene>
     </library_visual_scenes>
     <library_geometries>
@@ -266,49 +248,7 @@
                 </triangles>
             </mesh>
         </geometry>
-        <geometry id="ID45">
-            <mesh>
-                <source id="ID48">
-                    <float_array id="ID50" count="6">-1.359707884072966 -4.839878062064562 0 -1.359707884072966 -4.839878062064562 0.3937007874015754</float_array>
-                    <technique_common>
-                        <accessor count="2" source="#ID50" stride="3">
-                            <param name="X" type="float" />
-                            <param name="Y" type="float" />
-                            <param name="Z" type="float" />
-                        </accessor>
-                    </technique_common>
-                </source>
-                <vertices id="ID49">
-                    <input semantic="POSITION" source="#ID48" />
-                </vertices>
-                <lines count="1" material="Material2">
-                    <input offset="0" semantic="VERTEX" source="#ID49" />
-                    <p>1 0</p>
-                </lines>
-            </mesh>
-        </geometry>
-        <geometry id="ID51">
-            <mesh>
-                <source id="ID54">
-                    <float_array id="ID56" count="6">1.789898415139632 -4.839878062064561 0 1.789898415139632 -4.839878062064561 0.3937007874015754</float_array>
-                    <technique_common>
-                        <accessor count="2" source="#ID56" stride="3">
-                            <param name="X" type="float" />
-                            <param name="Y" type="float" />
-                            <param name="Z" type="float" />
-                        </accessor>
-                    </technique_common>
-                </source>
-                <vertices id="ID55">
-                    <input semantic="POSITION" source="#ID54" />
-                </vertices>
-                <lines count="1" material="Material2">
-                    <input offset="0" semantic="VERTEX" source="#ID55" />
-                    <p>1 0</p>
-                </lines>
-            </mesh>
-        </geometry>
-    </library_geometries>
+        </library_geometries>
     <library_materials>
         <material id="ID3" name="material_0">
             <instance_effect url="#ID4" />
