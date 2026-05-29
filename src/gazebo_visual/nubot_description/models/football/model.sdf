@@ -158,5 +158,6 @@
             <!-- link_name：被速度控制插件作用的连杆 -->
             <link_name>chassis</link_name>
         </plugin>
+
     </model>
 </sdf>
