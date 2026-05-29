@@ -6,17 +6,6 @@ from launch.actions import IncludeLaunchDescription, OpaqueFunction, SetEnvironm
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
 
-
-def _load_config():
-    """加载全局配置文件"""
-    pkg_share = get_package_share_directory('nubot_gazebo')
-    config_path = os.path.join(pkg_share, 'config', 'global_config.yaml')
-    with open(config_path, 'r') as f:
-        return yaml.safe_load(f)
-
-
-
-
 def generate_launch_description():
     pkg_share = get_package_share_directory('nubot_gazebo')
     model_share = get_package_share_directory('nubot_description')

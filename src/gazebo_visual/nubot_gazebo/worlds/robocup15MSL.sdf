@@ -15,7 +15,6 @@
         <!-- 物理系统插件：负责物理引擎计算（重力、碰撞、运动） -->
         <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics">
         </plugin>
-
         <!-- 用户命令插件：响应用户操作（拖动、删除、重置模型） -->
         <plugin filename="gz-sim-user-commands-system" name="gz::sim::systems::UserCommands">
         </plugin>
@@ -23,6 +22,8 @@
         <!-- 场景广播插件：将场景数据同步给GUI、传感器、外部程序 -->
         <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster">
         </plugin>
+
+        <plugin filename="gz-sim-contact-system" name="gz::sim::systems::Contact" />
 
 
         <!-- scene：场景视觉全局配置 -->
