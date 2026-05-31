@@ -1,12 +1,11 @@
-[Err] [CustomMeshShape.cc:144] [dartsim::CustomMeshShape] One of the submeshes [6:SketchUp] in the input mesh [/home/lq/桌面/code/Robocup_Mid_Sim/src/gazebo_visual/nubot_description/models/nubot1/meshes] does not have a normal count [0] that matches its vertex count [2]. This submesh will be ignored!
-[Err] [CustomMeshShape.cc:144] [dartsim::CustomMeshShape] One of the submeshes [7:SketchUp] in the input mesh [/home/lq/桌面/code/Robocup_Mid_Sim/src/gazebo_visual/nubot_description/models/nubot1/meshes] does not have a normal count [0] that matches its vertex count [2]. This submesh will be ignored!
+Done:
+- Configure GZ_SIM_RESOURCE_PATH in the launch file instead of package XML.
+- Start Gazebo Harmonic with the Bullet physics plugin from the launch file.
+- Move world gravity out of the physics block for SDF 1.11 compatibility.
 
-机器人部分可能因为持球报错信息要修改碰撞体。注意持球部分的影响。
-
-读取模型的环境变量需要写到launch文件中，在xml不生效
-
-gazebo harmonic的物理引擎比较严格，需要修复模型。
-
-暂时先用bullet替代。
-暂时先用
-暂时先用
+Remaining:
+- If mesh-normal warnings return with DART or another physics backend, repair or
+  regenerate the affected SketchUp DAE meshes instead of using them as collision
+  geometry.
+- Recheck the robot front guide collision boxes when tuning ball possession, as
+  they can affect how the robot holds or releases the ball.

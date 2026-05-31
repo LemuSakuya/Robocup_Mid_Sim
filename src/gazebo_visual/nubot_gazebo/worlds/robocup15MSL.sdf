@@ -8,6 +8,8 @@
     <!-- world：定义一个完整的仿真世界
        name：世界名称，这里是RoboCup15MSL比赛场 -->
     <world name='RoboCup15MSL'>
+        <!-- 重力：Z轴向下 -9.81，模拟地球重力 -->
+        <gravity>0.0 0.0 -9.81</gravity>
 
 
         <!-- 系统插件：Gazebo 核心功能模块 -->
@@ -89,11 +91,10 @@
         </gui>
 
 
-        <!-- physics：物理引擎核心参数 type="ode"：使用ODE引擎（Gazebo默认） -->
+        <!-- physics：物理参数。Gazebo Sim 的物理插件由 launch 参数选择，
+             当前默认使用 Bullet。 -->
 
-        <physics name="default_physics" default="true" type="ode">
-            <!-- 重力：Z轴向下 -9.81，模拟地球重力 -->
-            <gravity>0.0 0.0 -9.81</gravity>
+        <physics name="default_physics" default="true" type="bullet">
             <!-- 最大步长：物理迭代步长0.001秒（高精度） -->
             <max_step_size>0.001</max_step_size>
             <!-- 实时因子：1=与现实时间同步 -->

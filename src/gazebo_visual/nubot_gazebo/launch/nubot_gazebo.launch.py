@@ -1,18 +1,21 @@
 import os
-import yaml
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription, OpaqueFunction, SetEnvironmentVariable
+from launch.actions import IncludeLaunchDescription, SetEnvironmentVariable
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
 
 def generate_launch_description():
     pkg_share = get_package_share_directory('nubot_gazebo')
     model_share = get_package_share_directory('nubot_description')
+    existing_resource_path = os.environ.get('GZ_SIM_RESOURCE_PATH', '')
+    resource_paths = [os.path.join(model_share, 'models')]
+    if existing_resource_path:
+        resource_paths.append(existing_resource_path)
 
     set_env = SetEnvironmentVariable(
         name='GZ_SIM_RESOURCE_PATH',
-        value=f"{model_share}/models:$GZ_SIM_RESOURCE_PATH"
+        value=os.pathsep.join(resource_paths)
     )
     # 启动 Gazebo Harmonic (gz-sim)
     gz_sim = IncludeLaunchDescription(
@@ -23,7 +26,10 @@ def generate_launch_description():
             )
         ]),
         launch_arguments={
-            'gz_args': os.path.join(pkg_share, 'worlds', 'robocup15MSL.sdf') + ' -v 4',
+            'gz_args': (
+                os.path.join(pkg_share, 'worlds', 'robocup15MSL.sdf')
+                + ' -v 4 --physics-engine gz-physics-bullet-plugin'
+            ),
         }.items(),
     )
     
