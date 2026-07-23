@@ -4,7 +4,7 @@
 
 本项目是 RoboCup 中型组 5v5 仿真框架，运行于 ROS 2 Jazzy 和 Gazebo Harmonic。项目包含比赛场地、机器人和足球模型、Gazebo 插件、ROS/Gazebo bridge、自动裁判以及机器人控制接口。
 
-当前项目的最终运行环境是 Ubuntu。项目目录可以放在 macOS 与 Ubuntu 的共享文件夹中，但 ROS 2、Gazebo、colcon 和所有比赛进程都必须在 Ubuntu 中执行。
+当前项目的最终运行环境是 Ubuntu。
 
 ## 1. 环境与编译
 
@@ -15,8 +15,6 @@
 - Gazebo Harmonic。
 - `ros_gz_sim`、`ros_gz_bridge` 以及项目所需的 ROS 2 消息依赖。
 - 三机联调时，三台电脑必须处于同一个局域网。
-
-规则 PDF 仍记录了旧版 Ubuntu 18.04 和 ROS Melodic。当前仓库已经迁移到 ROS 2 Jazzy，正式比赛应以组委会提供的运行镜像为准。
 
 ### 1.2 编译工作空间
 
@@ -34,17 +32,11 @@ source install/setup.bash
 
 修改 launch 文件、Python 节点、C++ 插件或消息接口后，需要重新执行 `colcon build`，并在每个运行终端重新执行 `source install/setup.bash`。
 
-共享文件夹只用于同步源码和脚本。`build/`、`install/`、`log/` 应由实际运行 ROS 的 Ubuntu 环境生成，不要在 macOS 上编译后把生成物当作 Ubuntu 的运行环境。
-
-如果脚本权限在共享文件夹中丢失，可以在 Ubuntu 中执行：
-
-```bash
-chmod +x scripts/*.sh
-```
+`build/`、`install/`、`log/` 应由实际运行 ROS 的 Ubuntu 环境生成。
 
 ## 2. 三机部署模型
 
-规则第 6.2 节规定三台电脑的职责如下。当前 ROS 2 入口与规则和参考仓库 `simatch` 对齐：
+规则第 6.2 节规定三台电脑的职责如下。
 
 | 电脑 | 运行内容 | 启动入口 | 话题前缀 | 物理进攻方向 |
 | --- | --- | --- | --- | --- |
@@ -58,7 +50,7 @@ chmod +x scripts/*.sh
 
 ### 2.1 与参考 simatch 的对应关系
 
-旧版 `simatch` 使用 ROS 1，并通过 `cyan_robot.sh`、`magenta_robot.sh` 分别启动两队的机器人代码。当前仓库保留了同样的两个队伍入口，但内部改为 ROS 2 launch。
+通过 `cyan_robot.sh`、`magenta_robot.sh` 分别启动两队的机器人代码。
 
 当前实现把自动裁判和 CoachInfo 的统一发布放在 A 电脑，B/C 只运行本队节点。这样可以保证 `/nubot/receive_from_coach`、`/rival/receive_from_coach` 和 `/DribbleId` 各只有一个服务或发布源，避免三机模式下重复发布。
 
@@ -351,8 +343,5 @@ src/
 ## 10. 规则与参考
 
 - 比赛规则：2025 中国机器人大赛暨 RoboCup 机器人世界杯中国赛中型组仿真规则 PDF。
-- 参考框架：[LemuSakuya/simatch](https://github.com/LemuSakuya/simatch)。
-
-参考仓库使用 ROS 1 和 `ROS_MASTER_URI`，当前项目使用 ROS 2 DDS，因此网络配置和启动命令不能直接照搬。可沿用的核心设计是：A 运行仿真，B 运行 cyan 队伍代码，C 运行 magenta 队伍代码。
 
 比赛场地、机器人模型、足球模型和规则相关模块应以赛事提供版本为准，不要为了策略开发随意修改官方仿真环境。
