@@ -3,6 +3,7 @@ from typing import Dict, Optional
 
 import rclpy
 from rclpy.node import Node
+from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
 
 from nubot_interfaces.msg import CoachInfo, CoachWorldModelInfo, WorldModelInfo
 
@@ -50,6 +51,10 @@ class CoachBridge(Node):
         self.coach_info = CoachInfo()
         self._load_coach_params()
 
+        coach_qos = QoSProfile(depth=10)
+        coach_qos.reliability = ReliabilityPolicy.RELIABLE
+        coach_qos.durability = DurabilityPolicy.TRANSIENT_LOCAL
+
         # latest_world_model 保存每台机器人最近一次 world_model。
         # latest_world_time_ns 保存接收时刻，用于过滤掉长时间未更新的数据。
         self.latest_world_model: Dict[int, WorldModelInfo] = {}
@@ -59,7 +64,7 @@ class CoachBridge(Node):
         self.coach_pub = self.create_publisher(
             CoachInfo,
             f'/{self.team_prefix}/receive_from_coach',
-            10,
+            coach_qos,
         )
         # 输出：coach 工具使用的队伍级世界模型。
         self.coach_world_pub = self.create_publisher(

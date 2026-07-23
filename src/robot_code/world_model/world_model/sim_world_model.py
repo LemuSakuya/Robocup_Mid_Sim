@@ -4,6 +4,7 @@ from typing import Dict, Iterable, Optional
 
 import rclpy
 from rclpy.node import Node
+from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
 from std_msgs.msg import Int16
 
 from nubot_interfaces.msg import (
@@ -129,6 +130,8 @@ class SimWorldModel(Node):
         self.declare_parameter('team_size', 5)
         self.declare_parameter('update_period', 0.015)
         self.declare_parameter('teammate_filter_radius_cm', 35.0)
+        # DribbleId 保留旧的全局编号：cyan 为 1..N，magenta 为 N+1..2N。
+        self.declare_parameter('dribble_id_offset', 0)
         self.declare_parameter('dribble_id_topic', '/dribble_id')
 
         robot_name = self.get_parameter('robot_name').get_parameter_value().string_value
@@ -139,6 +142,11 @@ class SimWorldModel(Node):
         self.team_size = self.get_parameter('team_size').get_parameter_value().integer_value
         self.filter_radius_cm = (
             self.get_parameter('teammate_filter_radius_cm').get_parameter_value().double_value
+        )
+        self.dribble_id_offset = (
+            self.get_parameter('dribble_id_offset')
+            .get_parameter_value()
+            .integer_value
         )
 
         # coach_info 保存最近一次教练/裁判盒信息；启动时默认为停止机器人模式。
@@ -167,11 +175,14 @@ class SimWorldModel(Node):
             10,
         )
         # 输入：队伍级教练/比赛控制信息。
+        coach_qos = QoSProfile(depth=10)
+        coach_qos.reliability = ReliabilityPolicy.RELIABLE
+        coach_qos.durability = DurabilityPolicy.TRANSIENT_LOCAL
         self.create_subscription(
             CoachInfo,
             f'/{self.team_prefix}/receive_from_coach',
             self._on_coach,
-            10,
+            coach_qos,
         )
         # 输入：队伍级策略状态，用于补齐各机器人角色、目标和传球命令。
         self.create_subscription(
@@ -285,7 +296,8 @@ class SimWorldModel(Node):
             robot.role_time = strategy.role_time
             robot.is_dribble = strategy.is_dribble
             robot.is_kick = strategy.is_kickoff
-        if self.current_dribble_id == agent_id:
+        global_agent_id = self.dribble_id_offset + agent_id
+        if self.current_dribble_id == global_agent_id:
             robot.is_dribble = True
         elif self.current_dribble_id != -1:
             robot.is_dribble = False

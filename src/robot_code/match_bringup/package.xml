@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>match_bringup</name>
+  <version>0.1.0</version>
+  <description>Three-computer match bringup for the RoboCup MSL simulation.</description>
+  <maintainer email="lemusakuya@gmail.com">lemusakuya</maintainer>
+  <license>BSD-3-Clause</license>
+
+  <buildtool_depend>ament_python</buildtool_depend>
+
+  <exec_depend>ament_index_python</exec_depend>
+  <exec_depend>auto_referee</exec_depend>
+  <exec_depend>launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
+  <exec_depend>nubot_description</exec_depend>
+  <exec_depend>nubot_gazebo</exec_depend>
+  <exec_depend>nubot_hwcontroller</exec_depend>
+  <exec_depend>nubot_plugin</exec_depend>
+  <exec_depend>ros_gz_bridge</exec_depend>
+  <exec_depend>ros_gz_sim</exec_depend>
+  <exec_depend>simulation_interface</exec_depend>
+  <exec_depend>world_model</exec_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

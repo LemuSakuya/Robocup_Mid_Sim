@@ -16,6 +16,7 @@
 #include <gz/sim/components/AngularVelocity.hh>
 #include <builtin_interfaces/msg/time.hpp>
 #include <gz/msgs/twist.pb.h>
+#include <rclcpp/qos.hpp>
 
 namespace nubot_plugins
 {
@@ -214,8 +215,12 @@ void NubotGazebo::init_ros()
   action_cmd_sub_ = ros_node_->create_subscription<nubot_interfaces::msg::ActionCmd>(
     scoped_topic(model_name_, "nubotcontrol/actioncmd"), 100,
     [this](const nubot_interfaces::msg::ActionCmd::SharedPtr msg) { action_cmd_cb(msg); });
+  const std::string own_team_prefix = flip_cord_ ? mag_pre_ : cyan_pre_;
+  rclcpp::QoS coach_qos(10);
+  coach_qos.reliable();
+  coach_qos.transient_local();
   coach_info_sub_ = ros_node_->create_subscription<nubot_interfaces::msg::CoachInfo>(
-    "/" + cyan_pre_ + "/receive_from_coach", 100,
+    "/" + own_team_prefix + "/receive_from_coach", coach_qos,
     [this](const nubot_interfaces::msg::CoachInfo::SharedPtr msg) { coach_info_cb(msg); });
   cyan_sendingoff_sub_ = ros_node_->create_subscription<nubot_interfaces::msg::SendingOff>(
     "/" + cyan_pre_ + "/redcard/chatter", 100,
@@ -463,7 +468,12 @@ bool NubotGazebo::update_model_info(const gz::sim::EntityComponentManager &_ecm)
 
   nubot_ball_vec_ = ball_state_.pose.position - robot_state_.pose.position;
   nubot_ball_vec_len_ = nubot_ball_vec_.Length();
+  // Strategy coordinates always point toward the opponent goal.  The rival
+  // physical model faces -X, so rotate its local forward vector by 180 deg.
   kick_vector_world_ = robot_state_.pose.orient.RotateVector(gz::math::Vector3d(1, 0, 0));
+  if (flip_cord_) {
+    kick_vector_world_ *= -1.0;
+  }
 
   obs_.world_obs.clear();
   obs_.real_obs.clear();
@@ -495,6 +505,15 @@ bool NubotGazebo::update_model_info(const gz::sim::EntityComponentManager &_ecm)
       teammate_info_.pos.x = state.pose.position.X() * M2CM_CONVERSION;
       teammate_info_.pos.y = state.pose.position.Y() * M2CM_CONVERSION;
       teammate_info_.heading.theta = state.pose.orient.Yaw();
+      if (flip_cord_) {
+        teammate_info_.heading.theta += PI;
+        while (teammate_info_.heading.theta > PI) {
+          teammate_info_.heading.theta -= 2.0 * PI;
+        }
+        while (teammate_info_.heading.theta <= -PI) {
+          teammate_info_.heading.theta += 2.0 * PI;
+        }
+      }
       teammate_info_.vrot = state.twist.angular.Z();
       teammate_info_.vtrans.x = state.twist.linear.X() * M2CM_CONVERSION;
       teammate_info_.vtrans.y = state.twist.linear.Y() * M2CM_CONVERSION;
