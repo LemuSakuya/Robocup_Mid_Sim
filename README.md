@@ -121,58 +121,41 @@ export ROS_STATIC_PEERS='192.168.1.10;192.168.1.11;192.168.1.12'
 
 开始前，三台电脑都应完成第 1 节的编译，并完成第 3 节的网络配置。建议先启动 A，确认 Gazebo 正常运行后，再启动 B 和 C。
 
-### 4.1 启动 A：仿真主机
+下面两种启动方案功能相同。方案二只是对方案一的命令封装；每台电脑选择其中一种即可，不要重复启动同一个角色。
 
-优先尝试 GPU/Ogre2：
+### 4.1 方案一：直接使用 `match_bringup`
 
-```bash
-./scripts/run_match.sh arena gpu
-```
-
-如果虚拟机或显卡环境无法运行 Ogre2，使用 CPU/兼容模式：
+使用本方案前，每个终端都要加载 ROS 2 和当前工作空间环境：
 
 ```bash
-./scripts/run_match.sh arena cpu
+set +u
+source /opt/ros/jazzy/setup.bash
+source install/setup.bash
 ```
+
+三台电脑分别执行：
+
+| 电脑 | 启动命令 |
+| --- | --- |
+| A：GPU/Ogre2 | `ros2 launch match_bringup arena.launch.py render_engine:=ogre2` |
+| A：CPU/Ogre1 兼容模式 | `ros2 launch match_bringup arena.launch.py render_engine:=ogre` |
+| B：cyan | `ros2 launch match_bringup team.launch.py side:=cyan` |
+| C：magenta | `ros2 launch match_bringup team.launch.py side:=magenta` |
+
+### 4.2 方案二：使用启动脚本
+
+脚本会自动加载 ROS 2 和当前工作空间环境，并检查三机通信所需的环境变量。
+
+| 电脑 | 启动命令 |
+| --- | --- |
+| A：GPU/Ogre2 | `./scripts/run_match.sh arena gpu` |
+| A：CPU/Ogre1 兼容模式 | `./scripts/run_match.sh arena cpu` |
+| B：cyan | `./scripts/cyan_robot.sh` |
+| C：magenta | `./scripts/magenta_robot.sh` |
+
+其中，B 会启动 `nubot1` 到 `nubot5` 的世界模型、底盘控制器和 `/nubot_strategy_pub`；C 会启动 `rival1` 到 `rival5` 的对应节点和 `/rival_strategy_pub`。B/C 都不会启动 Gazebo。
 
 A 电脑启动后应提供 Gazebo、`/clock`、自动裁判、ROS/Gazebo bridge、`/DribbleId` 和 set-pose 服务。
-
-### 4.2 启动 B：cyan 队伍端
-
-```bash
-./scripts/cyan_robot.sh
-```
-
-脚本会启动 `nubot1` 到 `nubot5` 的世界模型和底盘控制器，以及 `/nubot_strategy_pub` 策略聚合器。它不会启动 Gazebo。
-
-### 4.3 启动 C：magenta 队伍端
-
-```bash
-./scripts/magenta_robot.sh
-```
-
-脚本会启动 `rival1` 到 `rival5` 的世界模型和底盘控制器，以及 `/rival_strategy_pub` 策略聚合器。它不会启动 Gazebo。
-
-两个队伍脚本支持继续传递 launch 参数，例如：
-
-```bash
-./scripts/cyan_robot.sh use_sim_time:=true
-./scripts/magenta_robot.sh use_sim_time:=true
-```
-
-统一入口仍然保留：
-
-```bash
-./scripts/run_match.sh cyan
-./scripts/run_match.sh magenta
-```
-
-直接使用 ROS 2 launch 也可以：
-
-```bash
-ros2 launch match_bringup team.launch.py side:=cyan
-ros2 launch match_bringup team.launch.py side:=magenta
-```
 
 停止比赛时，在对应启动终端按 `Ctrl+C`。不要同时启动旧的单机 Gazebo 入口，否则会造成重复节点、重复服务或重复话题发布者。
 
@@ -327,7 +310,7 @@ src/
 │   ├── world_model/            # 单机器人世界模型
 │   ├── nubot_hwcontroller/     # ActionCmd 到 VelCmd 的控制器
 │   ├── simulation_interface/   # 策略聚合、Coach bridge、带球服务
-│   └── match_bringup/          # arena/cyan/magenta 三机启动入口
+│   └── match_bringup/          # arena/cyan/magenta 三机启动编排包
 ├── auto_referee/               # 自动裁判
 └── tools/                      # 辅助工具
 ```
