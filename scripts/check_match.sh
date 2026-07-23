@@ -74,7 +74,23 @@ check_items topic "${topic_list}" "${expected_topics[@]}"
 check_items service "${service_list}" "${expected_services[@]}"
 
 if [[ ${failed} -ne 0 ]]; then
-    echo "检查未通过。确认三台电脑同网段、ROS_DOMAIN_ID 相同且防火墙允许 DDS。" >&2
+    echo >&2
+    echo "当前 DDS 图中发现的节点:" >&2
+    if [[ -n "${node_list}" ]]; then
+        sort <<<"${node_list}" >&2
+    else
+        echo "  (无)" >&2
+    fi
+
+    if grep -Eq \
+        '^/(world_model_[1-5]|nubot_hwcontroller_[1-5]|strategy_pub_node)$' \
+        <<<"${node_list}"; then
+        echo >&2
+        echo "检测到旧版节点名：请重新 colcon build，并重启三个启动进程。" >&2
+    else
+        echo >&2
+        echo "检查未通过。若话题/服务已为 OK，请检查缺失节点所在启动终端是否退出或报错。" >&2
+    fi
     exit 1
 fi
 
