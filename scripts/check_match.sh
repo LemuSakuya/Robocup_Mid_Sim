@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
+set -eo pipefail
 
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 workspace_dir="$(cd -- "${script_dir}/.." && pwd)"
@@ -14,6 +14,9 @@ fi
 
 source "${ros_setup}"
 source "${workspace_setup}"
+
+# ROS 2 and colcon setup files read optional variables that may be unset.
+set -u
 
 export ROS_DOMAIN_ID="${ROS_DOMAIN_ID:-42}"
 export ROS_LOCALHOST_ONLY="${ROS_LOCALHOST_ONLY:-0}"
