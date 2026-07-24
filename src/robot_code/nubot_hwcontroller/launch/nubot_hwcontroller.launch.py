@@ -23,7 +23,7 @@ def _launch_setup(context):
             Node(
                 package='nubot_hwcontroller',
                 executable='nubot_hwcontroller_node',
-                name=f'nubot_hwcontroller_{robot_id}',
+                name=f'{team_prefix}_hwcontroller_{robot_id}',
                 output='screen',
                 parameters=[{
                     'robot_name': robot_name,

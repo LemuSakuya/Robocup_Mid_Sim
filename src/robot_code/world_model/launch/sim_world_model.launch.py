@@ -16,7 +16,7 @@ def _launch_setup(context):
             Node(
                 package='world_model',
                 executable='sim_world_model',
-                name=f'world_model_{robot_id}',
+                name=f'{team_prefix}_world_model_{robot_id}',
                 output='screen',
                 parameters=[{
                     'robot_name': robot_name,
@@ -25,6 +25,14 @@ def _launch_setup(context):
                     'update_period': ParameterValue(
                         LaunchConfiguration('update_period'),
                         value_type=float,
+                    ),
+                    'dribble_id_offset': ParameterValue(
+                        LaunchConfiguration('dribble_id_offset'),
+                        value_type=int,
+                    ),
+                    'use_sim_time': ParameterValue(
+                        LaunchConfiguration('use_sim_time'),
+                        value_type=bool,
                     ),
                 }],
             )
@@ -37,5 +45,7 @@ def generate_launch_description():
         DeclareLaunchArgument('team_prefix', default_value='nubot'),
         DeclareLaunchArgument('team_size', default_value='5'),
         DeclareLaunchArgument('update_period', default_value='0.015'),
+        DeclareLaunchArgument('dribble_id_offset', default_value='0'),
+        DeclareLaunchArgument('use_sim_time', default_value='true'),
         OpaqueFunction(function=_launch_setup),
     ])

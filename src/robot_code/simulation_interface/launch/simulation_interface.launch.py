@@ -1,5 +1,6 @@
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
+from launch.conditions import IfCondition
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
@@ -21,6 +22,14 @@ def generate_launch_description():
     team_size = LaunchConfiguration('team_size')
     publish_rate = LaunchConfiguration('publish_rate')
     strategy_timeout = LaunchConfiguration('strategy_timeout')
+    use_sim_time = LaunchConfiguration('use_sim_time')
+    launch_strategy_aggregator = LaunchConfiguration(
+        'launch_strategy_aggregator'
+    )
+    launch_coach_bridge = LaunchConfiguration('launch_coach_bridge')
+    launch_dribble_status_server = LaunchConfiguration(
+        'launch_dribble_status_server'
+    )
     match_mode = LaunchConfiguration('match_mode')
     match_type = LaunchConfiguration('match_type')
     test_mode = LaunchConfiguration('test_mode')
@@ -30,6 +39,14 @@ def generate_launch_description():
         DeclareLaunchArgument('team_size', default_value='5'),
         DeclareLaunchArgument('publish_rate', default_value='30.0'),
         DeclareLaunchArgument('strategy_timeout', default_value='0.10'),
+        DeclareLaunchArgument('use_sim_time', default_value='true'),
+        DeclareLaunchArgument(
+            'launch_strategy_aggregator', default_value='true'
+        ),
+        DeclareLaunchArgument('launch_coach_bridge', default_value='true'),
+        DeclareLaunchArgument(
+            'launch_dribble_status_server', default_value='true'
+        ),
         DeclareLaunchArgument('match_mode', default_value='0'),
         DeclareLaunchArgument('match_type', default_value='0'),
         DeclareLaunchArgument('test_mode', default_value='0'),
@@ -37,20 +54,22 @@ def generate_launch_description():
         Node(
             package='simulation_interface',
             executable='strategy_aggregator',
-            name='strategy_pub_node',
+            name=[team_prefix, '_strategy_pub'],
             output='screen',
             parameters=[{
                 'team_prefix': team_prefix,
                 'team_size': ParameterValue(team_size, value_type=int),
                 'publish_rate': ParameterValue(publish_rate, value_type=float),
                 'timeout_sec': ParameterValue(strategy_timeout, value_type=float),
+                'use_sim_time': ParameterValue(use_sim_time, value_type=bool),
             }],
+            condition=IfCondition(launch_strategy_aggregator),
         ),
         # 发布 CoachInfo，并把最新机器人 world_model 转换为 coach 世界模型。
         Node(
             package='simulation_interface',
             executable='coach_bridge',
-            name='coach_bridge',
+            name=[team_prefix, '_coach_bridge'],
             output='screen',
             parameters=[{
                 'team_prefix': team_prefix,
@@ -59,7 +78,9 @@ def generate_launch_description():
                 'match_mode': ParameterValue(match_mode, value_type=int),
                 'match_type': ParameterValue(match_type, value_type=int),
                 'test_mode': ParameterValue(test_mode, value_type=int),
+                'use_sim_time': ParameterValue(use_sim_time, value_type=bool),
             }],
+            condition=IfCondition(launch_coach_bridge),
         ),
         # 提供 /DribbleId 服务，并将当前持球编号发布到 /dribble_id。
         Node(
@@ -67,5 +88,9 @@ def generate_launch_description():
             executable='dribble_status_server',
             name='dribble_status_server',
             output='screen',
+            parameters=[{
+                'use_sim_time': ParameterValue(use_sim_time, value_type=bool),
+            }],
+            condition=IfCondition(launch_dribble_status_server),
         ),
     ])
